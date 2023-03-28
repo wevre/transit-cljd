@@ -1,0 +1,37 @@
+(ns wevre.roundtrip
+  (:require ["dart:convert" :as convert]
+            ["dart:io" :as io]
+            [wevre.transit-cljd :as transit]))
+
+(defn json-round-trip []
+  (let [codec (transit/json)]
+    (-> io/stdin
+        (.transform convert/utf8.decoder)
+        (.transform (.-decoder codec))
+        (.transform (.-encoder codec))
+        (.transform convert/utf8.encoder)
+        (.pipe io/stdout))))
+
+(defn json-verbose-round-trip []
+  (let [codec (transit/json-verbose)]
+    (-> io/stdin
+        (.transform convert/utf8.decoder)
+        (.transform (.-decoder codec))
+        (.transform (.-encoder codec))
+        (.transform convert/utf8.encoder)
+        (.pipe io/stdout))))
+
+(defn msgpack-round-trip []
+  (let [codec (transit/msgpack)]
+    (-> io/stdin
+        (.transform convert/utf8.decoder)
+        (.transform (.-decoder codec))
+        (.transform (.-encoder codec))
+        (.transform convert/utf8.encoder)
+        (.pipe io/stdout))))
+
+(defn main [& arg]
+  (case arg
+    "json" (json-round-trip)
+    "json-verbose" (json-verbose-round-trip)
+    "msgpack" (msgpack-round-trip)))

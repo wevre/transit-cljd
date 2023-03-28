@@ -1,0 +1,24 @@
+(ns wevre.transit-steps-test
+  (:require ["dart:async" :as async]
+            ["package:test/test.dart" :as test]
+            [wevre.transit-cljd :as transit]))
+
+(defn test-steps []
+  (let [codec (transit/json)
+        objects ["foo" {:a [1 2]}]
+        _ (println "Object: " objects)
+        encoded (await
+                 (-> (async/Stream.fromIterable objects)
+                     (.transform (.-encoder codec))
+                     .toList))
+        _ (println "Encoded: " encoded)
+        decoded (await
+                 (-> (async/Stream.fromIterable encoded)
+                     (. #/(cast String))
+                     (.transform (.-decoder codec))
+                     .toList))
+        _ (println "Decoded: " decoded)]
+    (test/expect decoded (test/equals objects))))
+
+(defn main []
+  (test/test "Round trip in steps" test-steps))

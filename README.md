@@ -39,9 +39,9 @@ Coming soon: dependency info for deps.edn.
                      (.transform (.-encoder codec))
                      .toList))
         _ (println "Encoded: " encoded)
-        encoded (. encoded #/(cast String))
         decoded (await
                  (-> (async/Stream.fromIterable encoded)
+                     (. #/(cast String))
                      (.transform (.-decoder codec))
                      .toList))
         _ (println "Decoded: " decoded)]))

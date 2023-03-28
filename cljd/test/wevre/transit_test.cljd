@@ -1,10 +1,10 @@
-(ns wevre.test.transit_test
-  (:require [wevre.transit-cljd :as transit]
-            ["dart:async" :as async]
-            ["package:test/test.dart" :as test]))
+(ns wevre.transit-test
+  (:require ["dart:async" :as async]
+            ["package:test/test.dart" :as test]
+            [wevre.transit-cljd :as transit]))
 
 (defn simple-test []
-  (let [codec (transit/json-codec)
+  (let [codec (transit/json)
         objects ["foo" {:a [1 2]}]
         roundtrip (await
                    (-> (async/Stream.fromIterable objects)

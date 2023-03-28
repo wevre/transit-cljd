@@ -18,7 +18,9 @@
 
    [] Can run a specific file with `dart run <dart-file>`.
 
-   []
+   [] ClojureDart maybe has a way to put test files in test/cljd-out? It's
+   listed in .gitignore but can't see anything that actually puts stuff in that
+   folder.
 
 :section Done
 

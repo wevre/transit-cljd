@@ -77,15 +77,46 @@
 
 ;; Codecs
 
-(defn ^transit/TransitJsonCodec json-codec [& {:keys [custom-read-handlers
-                                                      custom-write-handlers
-                                                      map-builder
-                                                      array-builder]
-                                               :or {custom-read-handlers default-read-handlers
-                                                    custom-write-handlers default-write-handlers
-                                                    map-builder map-builder
-                                                    array-builder array-builder}}]
+(defn ^transit/TransitJsonCodec json
+  [& {:keys [custom-read-handlers
+             custom-write-handlers
+             map-builder
+             array-builder]
+      :or {custom-read-handlers default-read-handlers
+           custom-write-handlers default-write-handlers
+           map-builder map-builder
+           array-builder array-builder}}]
   (transit/TransitJsonCodec
+   .customReadHandlers custom-read-handlers
+   .customWriteHandlers custom-write-handlers
+   .mapBuilder map-builder
+   .arrayBuilder array-builder))
+
+(defn ^transit/TransitJsonVerboseCodec json-verbose
+  [& {:keys [custom-read-handlers
+             custom-write-handlers
+             map-builder
+             array-builder]
+      :or {custom-read-handlers default-read-handlers
+           custom-write-handlers default-write-handlers
+           map-builder map-builder
+           array-builder array-builder}}]
+  (transit/TransitJsonVerboseCodec
+   .customReadHandlers custom-read-handlers
+   .customWriteHandlers custom-write-handlers
+   .mapBuilder map-builder
+   .arrayBuilder array-builder))
+
+(defn ^transit/TransitMessagePackCodec msgpack
+  [& {:keys [custom-read-handlers
+             custom-write-handlers
+             map-builder
+             array-builder]
+      :or {custom-read-handlers default-read-handlers
+           custom-write-handlers default-write-handlers
+           map-builder map-builder
+           array-builder array-builder}}]
+  (transit/TransitMessagePackCodec
    .customReadHandlers custom-read-handlers
    .customWriteHandlers custom-write-handlers
    .mapBuilder map-builder

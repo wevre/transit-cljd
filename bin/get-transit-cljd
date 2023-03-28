@@ -1,0 +1,17 @@
+#!/bin/sh
+
+cd `dirname $0`/../..
+
+if [ ! -d "transit-cljd" ]; then
+  git clone https://github.com/wevre/transit-cljd.git
+else
+  echo "transit-cljd exists"
+fi
+
+if [ ! -f "transit-cljd/lib/cljd-out/wevre/roundtrip.dart" ]; then
+  cd transit-cljd
+  clj -M:cljd init
+  clj -M:cljd compile wevre.roundtrip
+else
+  echo "roundtrip.dart exists"
+fi
