@@ -1,10 +1,11 @@
 (ns wevre.main
   (:require [wevre.transit-cljd :as transit]
-            ["dart:async" :as async]
-            ["dart:convert" :as convert]))
+            ["dart:async" :as async]))
+
+;; This needs to move under 'test' directory.
 
 (defn main []
-  (let [codec ^#/(convert/Codec dynamic String) (transit/codec :json)
+  (let [codec (transit/json-codec)
         objects ["foo" {:a [1 2]}]
         _ (println "Object: " objects)
         encoded (await
@@ -12,8 +13,9 @@
                      (.transform (.-encoder codec))
                      .toList))
         _ (println "Encoded: " encoded)
+        encoded (. encoded #/(cast String))
         decoded (await
-                 (-> (async/Stream.fromIterable ^#/(List String) encoded)
+                 (-> (async/Stream.fromIterable encoded)
                      (.transform (.-decoder codec))
                      .toList))
         _ (println "Decoded: " decoded)]))

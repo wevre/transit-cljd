@@ -9,16 +9,14 @@
 (def default-write-handlers
   {cljd/Keyword (let [to-str (fn [s] (.substring (str s) 1))]
                   (reify :extends #/(transit/WriteHandler cljd/Keyword dynamic)
-                    (tag [_ o] ":")
+                    (tag [_ _o] ":")
                     (rep [_ o .tag] (to-str o))
-                    (stringRep [_ o] (to-str o)))
-               #_(write-handler ":" to-str to-str))
+                    (stringRep [_ o] (to-str o))))
 
    cljd/Symbol (reify :extends #/(transit/WriteHandler cljd/Symbol dynamic)
-                 (tag [_ o] "$")
+                 (tag [_ _o] "$")
                  (rep [_ o .tag] (str o))
-                 (stringRep [_ o] (str o)))
-   #_(write-handler "$" str str)})
+                 (stringRep [_ o] (str o)))})
 
 ;; Reading
 
@@ -79,22 +77,16 @@
 
 ;; Codecs
 
-(defn codec [type]
-  (case type
-    :json         (transit/TransitJsonCodec
-                   .customReadHandlers default-read-handlers
-                   .customWriteHandlers default-write-handlers
-                   .mapBuilder map-builder
-                   .arrayBuilder array-builder)
-    :json-verbose (transit/TransitJsonVerboseCodec
-                   .customReadHandlers default-read-handlers
-                   .customWriteHandlers default-write-handlers
-                   .mapBuilder map-builder
-                   .arrayBuilder array-builder)
-    :msgpack      (transit/TransitMessagePackCodec
-                   .customReadHandlers default-read-handlers
-                   .customWriteHandlers default-write-handlers
-                   .mapBuilder map-builder
-                   .arrayBuilder array-builder)
-    (throw (ex-info "Type must by :json, :json-verbose, or :msgpack" {:type type})))
-  )
+(defn ^transit/TransitJsonCodec json-codec [& {:keys [custom-read-handlers
+                                                      custom-write-handlers
+                                                      map-builder
+                                                      array-builder]
+                                               :or {custom-read-handlers default-read-handlers
+                                                    custom-write-handlers default-write-handlers
+                                                    map-builder map-builder
+                                                    array-builder array-builder}}]
+  (transit/TransitJsonCodec
+   .customReadHandlers custom-read-handlers
+   .customWriteHandlers custom-write-handlers
+   .mapBuilder map-builder
+   .arrayBuilder array-builder))
