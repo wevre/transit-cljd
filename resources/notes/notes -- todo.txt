@@ -1,0 +1,32 @@
+:project transit-cljd
+   :author Mike Weaver
+   :created 2023-03-27
+
+:section Instructions
+
+   Use ✓ to mark completed
+
+:section ToDo
+
+   [] Get roundtrip testing with transit-format/verify working.
+
+   [] Test a custom type with custom read/write-handlers.
+
+   [] Documentation.
+
+   [] Can compile a specific namespace with `clj -M:cljd compile <ns>`.
+
+   [] Can run a specific file with `dart run <dart-file>`.
+
+   []
+
+:section Done
+
+   [✓] Organize src and test code under high level 'cljd' directory, with
+   appropriate changes to deps.edn.
+
+   [✓] The quick example, put that in a test file.
+
+   [✓] In dart_test.yaml we can set the test directory. And if we make our
+   namespaces something_test, the resulting file will be named with an
+   underscore, too, so Dart will pick them up as valid tests.
