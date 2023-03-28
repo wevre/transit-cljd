@@ -1,1 +1,100 @@
-(ns wevre.transit-cljd)
+(ns wevre.transit-cljd
+  "An implementation of the transit-format for ClojureDart build on top of the
+   transit_dart Dart package."
+  (:require [cljd.core :as cljd]
+            ["package:transit_dart/transit_dart.dart" :as transit]))
+
+;; Writing
+
+(def default-write-handlers
+  {cljd/Keyword (let [to-str (fn [s] (.substring (str s) 1))]
+                  (reify :extends #/(transit/WriteHandler cljd/Keyword dynamic)
+                    (tag [_ o] ":")
+                    (rep [_ o .tag] (to-str o))
+                    (stringRep [_ o] (to-str o)))
+               #_(write-handler ":" to-str to-str))
+
+   cljd/Symbol (reify :extends #/(transit/WriteHandler cljd/Symbol dynamic)
+                 (tag [_ o] "$")
+                 (rep [_ o .tag] (str o))
+                 (stringRep [_ o] (str o)))
+   #_(write-handler "$" str str)})
+
+;; Reading
+
+(defn read-handler
+  "Creates a transit ReadHandler whose fromRep method invokes the provided fn."
+  [from-rep]
+  (reify transit/ReadHandler (fromRep [_ o] (from-rep o))))
+
+(def default-read-handlers
+  {":" (read-handler keyword)
+   "$" (read-handler symbol)
+
+   "set"
+   (reify transit/ArrayReadHandler
+     (fromRep [_ _o])
+     (arrayBuilder [_]
+       (reify
+        :extends #/(transit/ArrayBuilder cljd/TransientHashSet cljd/PersistentHashSet dynamic)
+         (init [_] (transient #{}))
+         (add [_ s i] (conj! s i))
+         (complete [_ s] (persistent! s)))))
+   "cmap"
+   (reify transit/ArrayReadHandler
+     (fromRep [_ _o])
+     (arrayBuilder [_]
+       (let [marker ^:unique (Object)
+             next-key (List/from [marker])]
+         (reify
+          :extends #/(transit/ArrayBuilder cljd/TransientHashMap cljd/PersistentHashMap dynamic)
+           (init [_] (transient {}))
+           (add [_ m i]
+             (let [k (get next-key 0)]
+               (if (identical? k marker)
+                 (do
+                   (. next-key "[]=" 0 i)
+                   m)
+                 (do
+                   (. next-key "[]=" 0 marker)
+                   (assoc! m k i)))))
+           (complete [_ m] (persistent! m))))))
+   })
+
+;; Builders
+
+(def map-builder
+  (reify
+    :extends #/(transit/MapBuilder cljd/TransientHashMap cljd/PersistentHashMap dynamic dynamic)
+    (init [_] (transient {}))
+    (add [_ m k v] (assoc! m k v))
+    (complete [_ m] (persistent! m))))
+
+(def array-builder
+  (reify
+    :extends #/(transit/ArrayBuilder cljd/TransientVector cljd/PersistentVector dynamic)
+    (init [_] (transient []))
+    (add [_ v i] (conj! v i))
+    (complete [_ v] (persistent! v))))
+
+;; Codecs
+
+(defn codec [type]
+  (case type
+    :json         (transit/TransitJsonCodec
+                   .customReadHandlers default-read-handlers
+                   .customWriteHandlers default-write-handlers
+                   .mapBuilder map-builder
+                   .arrayBuilder array-builder)
+    :json-verbose (transit/TransitJsonVerboseCodec
+                   .customReadHandlers default-read-handlers
+                   .customWriteHandlers default-write-handlers
+                   .mapBuilder map-builder
+                   .arrayBuilder array-builder)
+    :msgpack      (transit/TransitMessagePackCodec
+                   .customReadHandlers default-read-handlers
+                   .customWriteHandlers default-write-handlers
+                   .mapBuilder map-builder
+                   .arrayBuilder array-builder)
+    (throw (ex-info "Type must by :json, :json-verbose, or :msgpack" {:type type})))
+  )

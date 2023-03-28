@@ -11,8 +11,9 @@ repository: https://github.com/wevre/transit-cljd
 environment:
   sdk: '>=2.19.4 <3.0.0'
 
-# dependencies:
-#   path: ^1.8.0
+dependencies:
+  transit_dart:
+    path: ../transit-dart
 
 dev_dependencies:
   lints: ^2.0.0

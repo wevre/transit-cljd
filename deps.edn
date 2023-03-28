@@ -4,4 +4,4 @@
          :sha "471c85b8c2378ddbaba39bbaa7926fbfc75c5ce7"}}
  :aliases {:cljd {:main-opts ["-m" "cljd.build"]}}
  :cljd/opts {:kind :dart
-             :main wevre.transit-cljd}}
+             :main wevre.main}}
