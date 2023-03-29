@@ -332,9 +332,10 @@ packages:
   transit_dart:
     dependency: "direct main"
     description:
-      path: "../transit-dart"
-      relative: true
-    source: path
+      name: transit_dart
+      sha256: "047219ae23b1952a3b7f9af50b35f597275b663a53825670fffc3a6cd1660e6e"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.8.81"
   typed_data:
     dependency: transitive
