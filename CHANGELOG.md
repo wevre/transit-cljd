@@ -1,3 +1,5 @@
-## 1.0.0
+# transit-cljd
+
+### 0.8.0
 
 - Initial version.

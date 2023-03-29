@@ -1,0 +1,18 @@
+:project transit-cljd
+   :author Mike Weaver
+   :created 2023-03-29
+
+:section Instructions
+
+   To update the version build execute this command:
+
+   ```
+      clj -T:build release :notes '"- changes in this release"'
+
+   Can specify multiple notes by either separating them with `\n` or by hitting
+   return while typing at the command line
+
+   ```
+      clj -T:build release :notes '"- the first note
+      > - the second note
+      "'

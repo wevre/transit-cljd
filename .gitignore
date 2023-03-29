@@ -10,3 +10,5 @@ test/cljd-out/
 
 .clj-kondo/
 .lsp/
+.nrepl-port
+.calva/

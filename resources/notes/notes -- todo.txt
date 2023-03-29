@@ -20,7 +20,9 @@
 
    [] ClojureDart maybe has a way to put test files in test/cljd-out? It's
    listed in .gitignore but can't see anything that actually puts stuff in that
-   folder.
+   folder. UPDATE I'm going back to an earlier approach where I let the test
+   files compile as normal to lib/cljd-out, but then I export them in a .dart
+   file under test/. That allows me to run dart test and they get picked up.
 
 :section Done
 

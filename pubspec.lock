@@ -335,7 +335,7 @@ packages:
       path: "../transit-dart"
       relative: true
     source: path
-    version: "0.8.79"
+    version: "0.8.81"
   typed_data:
     dependency: transitive
     description:

@@ -19,7 +19,7 @@ changes._
 
 ## Releases and Dependency Information
 
-* Latest release: none yet -- only tag so far is 0.8.0
+* Latest release: 0.8.5
 
 Coming soon: dependency info for deps.edn.
 

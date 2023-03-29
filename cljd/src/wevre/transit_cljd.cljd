@@ -34,10 +34,11 @@
      (fromRep [_ _o])
      (arrayBuilder [_]
        (reify
-        :extends #/(transit/ArrayBuilder cljd/TransientHashSet cljd/PersistentHashSet dynamic)
+         :extends #/(transit/ArrayBuilder cljd/TransientHashSet cljd/PersistentHashSet dynamic)
          (init [_] (transient #{}))
          (add [_ s i] (conj! s i))
          (complete [_ s] (persistent! s)))))
+
    "cmap"
    (reify transit/ArrayReadHandler
      (fromRep [_ _o])
@@ -45,19 +46,18 @@
        (let [marker ^:unique (Object)
              next-key (List/from [marker])]
          (reify
-          :extends #/(transit/ArrayBuilder cljd/TransientHashMap cljd/PersistentHashMap dynamic)
+           :extends #/(transit/ArrayBuilder cljd/TransientHashMap cljd/PersistentHashMap dynamic)
            (init [_] (transient {}))
            (add [_ m i]
-             (let [k (get next-key 0)]
+             (let [k (aget next-key 0)]
                (if (identical? k marker)
                  (do
-                   (. next-key "[]=" 0 i)
+                   (aset next-key 0 i)
                    m)
                  (do
-                   (. next-key "[]=" 0 marker)
+                   (aset next-key 0 marker)
                    (assoc! m k i)))))
-           (complete [_ m] (persistent! m))))))
-   })
+           (complete [_ m] (persistent! m))))))})
 
 ;; Builders
 

@@ -1,6 +1,7 @@
 (ns wevre.roundtrip
   (:require ["dart:convert" :as convert]
             ["dart:io" :as io]
+            ["dart:typed_data" :as td]
             [wevre.transit-cljd :as transit]))
 
 (defn json-round-trip []
@@ -24,14 +25,15 @@
 (defn msgpack-round-trip []
   (let [codec (transit/msgpack)]
     (-> io/stdin
-        (.transform convert/utf8.decoder)
+        (. #/(cast td/Uint8List))
         (.transform (.-decoder codec))
         (.transform (.-encoder codec))
-        (.transform convert/utf8.encoder)
+        (. #/(cast (List int)))
         (.pipe io/stdout))))
 
-(defn main [& arg]
-  (case arg
+(defn main [arg]
+  (case (get arg 0)
     "json" (json-round-trip)
     "json-verbose" (json-verbose-round-trip)
-    "msgpack" (msgpack-round-trip)))
+    "msgpack" (msgpack-round-trip)
+    (println "arg is `" arg "`")))
