@@ -35,9 +35,9 @@
      (arrayBuilder [_]
        (reify
          :extends #/(transit/ArrayBuilder cljd/TransientHashSet cljd/PersistentHashSet dynamic)
-         (init [_] (transient #{}))
-         (add [_ s i] (conj! s i))
-         (complete [_ s] (persistent! s)))))
+         (init [_] #{} #_(transient #{}))
+         (add [_ s i] (conj s i) #_(conj! s i))
+         (complete [_ s] s #_(persistent! s)))))
 
    "cmap"
    (reify transit/ArrayReadHandler
