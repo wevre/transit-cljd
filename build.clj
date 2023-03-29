@@ -29,7 +29,7 @@
     (update-readme version)
     (update-pubspec version)
     (update-changelog version notes)
-    (b/git-process {:git-args (format "commit -m \"update version references to %s\"" version)})
+    (b/git-process {:git-args ["commit" "-m" (format "update doc refs to version %s" version)]})
     (b/git-process {:git-args "push"})))
 
 (comment
