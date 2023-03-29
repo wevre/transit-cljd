@@ -4,7 +4,7 @@ description: >-
   This library provides support for marshalling Transit data to/from
   ClojureDart.
 
-version: 0.8.0
+version: 0.8.6
 
 repository: https://github.com/wevre/transit-cljd
 

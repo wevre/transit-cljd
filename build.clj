@@ -24,8 +24,8 @@
 
 (defn release [{:keys [notes]}]
   (let [version (version)]
-    (b/git-process {:git-args (format "tag -a v%1$s -m \"Release %1$s\"" version)})
-    #_#_#_#_#_#_(b/git-process {:git-args "push"})
+    (b/git-process {:git-args ["tag" "-a" (format "v%s" version) "-m" (format "Release %s" version)]})
+    (b/git-process {:git-args "push"})
     (update-readme version)
     (update-pubspec version)
     (update-changelog version notes)

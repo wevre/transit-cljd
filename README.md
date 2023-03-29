@@ -19,7 +19,7 @@ changes._
 
 ## Releases and Dependency Information
 
-* Latest release: 0.8.5
+* Latest release: 0.8.6
 
 Coming soon: dependency info for deps.edn.
 
