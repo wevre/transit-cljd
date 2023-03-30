@@ -51,6 +51,29 @@ Coming soon: dependency info for deps.edn.
 
 Coming soon.
 
+## Testing
+
+To run the roundtrip verification tests in `transit-format`, first ensure
+Dart>=2.19.1 and Java 8 are installed, then do the following:
+
+1. Set up a testing directory where `transit-format` and `transit-cljd` can be
+   cloned side-by-side. We have a fork `transit-format` that has support for
+   testing `transit-cljd` all ready to go. Clone this to your test folder.
+
+```sh
+mkdir transit-test
+cd transit-test
+git clone https://github.com/wevre/transit-format.git
+# Do something similar to the following to ensure Java 8.
+jenv local 1.8
+```
+
+2. From the `transit-format` folder, run the verify command.
+
+```sh
+bin/verify -impls cljd
+```
+
 ## Copyright and License
 
 Copyright © 2023 Michael J. Weaver

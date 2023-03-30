@@ -4,7 +4,7 @@ cd `dirname $0`/../..
 
 if [ ! -d "transit-cljd" ]; then
   echo "cloning transit-cljd"
-  git clone https://github.com/wevre/transit-cljd.git
+  git clone git@github.com:wevre/transit-cljd.git
 else
   echo "transit-cljd exists"
 fi
