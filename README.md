@@ -21,7 +21,10 @@ changes._
 
 * Latest release: 0.8.6
 
-Coming soon: dependency info for deps.edn.
+As a git dep:
+```
+io.github.wevre/transit-cljd {:git/tag "v0.8.6" :git/sha "56a8680"}
+```
 
 ## Usage
 
@@ -58,7 +61,7 @@ Dart>=2.19.1 and Java 8 are installed, then do the following:
 
 1. Set up a testing directory where `transit-format` and `transit-cljd` can be
    cloned side-by-side. We have a fork `transit-format` that has support for
-   testing `transit-cljd` all ready to go. Clone this to your test folder.
+   testing `transit-cljd` all ready to go. Clone this to your test directory.
 
 ```sh
 mkdir transit-test
@@ -68,9 +71,23 @@ git clone https://github.com/wevre/transit-format.git
 jenv local 1.8
 ```
 
-2. From the `transit-format` folder, run the verify command.
+2. From the `transit-format` directory, run the verify command.
 
 ```sh
+bin/verify -impls cljd
+```
+
+_NOTE: The above instructions might not quite work because of incompatibilities
+between Java 8 and later versions. ClojureDart has until very recently required
+Java 11. You might need to manually compile the 'wevre.roundtrip' namespace in
+Java 11, and then run verify with Java 8._
+
+```sh
+# Do this in the transit-test directory with Java 11.
+git clone git@github.com:wevre/transit-cljd
+cd transit-cljd
+clj -M:cljd compile wevre.roundtrip
+cd ../transit-format
 bin/verify -impls cljd
 ```
 

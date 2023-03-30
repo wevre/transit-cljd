@@ -7,9 +7,14 @@
         cnt (-> ref (str/split #"-") (get 1))]
     (format "0.8.%s" cnt)))
 
+(defn sha [ver]
+  (b/git-process {:git-args ["rev-parse" "--short" (format "v%s^{commit}" ver)]}))
+
 (defn- update-readme [ver]
-  (let [rstr (format "s/release: [[:digit:]]\\{1,2\\}\\.[[:digit:]]\\{1,2\\}\\.[[:digit:]]\\{1,4\\}/release: %s/g" ver)]
-    (b/process {:command-args ["sed" "-i" "" rstr "README.md"]})))
+  (let [ver-str (format "s/release: [[:digit:]]\\{1,2\\}\\.[[:digit:]]\\{1,2\\}\\.[[:digit:]]\\{1,4\\}/release: %s/g" ver)
+        sha (b/git-process {:git-args ["rev-parse" "--short" (format "v%s^{commit}" ver)]})
+        sha-str (format "s/sha \"[[:xdigit:]]\\{7,\\}\"/sha \"%s\"/g" sha)]
+    (b/process {:command-args ["sed" "-i" "" "-e" ver-str "-e" sha-str "README.md"]})))
 
 (defn- update-pubspec [ver]
   (let [rstr (format "s/version: [[:digit:]]\\{1,2\\}\\.[[:digit:]]\\{1,2\\}\\.[[:digit:]]\\{1,4\\}/version: %s/g" ver)]
@@ -33,7 +38,9 @@
     (b/git-process {:git-args "push"})))
 
 (comment
-  (update-readme "0.8.5")
+  (update-readme "0.8.6")
   (update-pubspec "0.8.5")
   (version)
+  (sha "0.8.6")
+
   )
