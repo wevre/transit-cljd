@@ -1,5 +1,9 @@
 # transit-cljd
 
+### 0.8.14
+
+- new build process
+
 ### 0.8.12
 
 - update README with SHA
