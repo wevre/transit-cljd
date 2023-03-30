@@ -19,11 +19,11 @@ changes._
 
 ## Releases and Dependency Information
 
-* Latest release: 0.8.6
+* Latest release: 0.8.12
 
 As a git dep:
 ```
-io.github.wevre/transit-cljd {:git/tag "v0.8.6" :git/sha "56a8680"}
+io.github.wevre/transit-cljd {:git/tag "v0.8.12" :git/sha "c7a5786"}
 ```
 
 ## Usage
@@ -57,7 +57,7 @@ Coming soon.
 ## Testing
 
 To run the roundtrip verification tests in `transit-format`, first ensure
-Dart>=2.19.1 and Java 8 are installed, then do the following:
+Dart>=0.8.12 and Java 8 are installed, then do the following:
 
 1. Set up a testing directory where `transit-format` and `transit-cljd` can be
    cloned side-by-side. We have a fork `transit-format` that has support for

@@ -11,7 +11,7 @@
   (b/git-process {:git-args ["rev-parse" "--short" (format "v%s^{commit}" ver)]}))
 
 (defn- update-readme [ver]
-  (let [ver-str (format "s/release: [[:digit:]]\\{1,2\\}\\.[[:digit:]]\\{1,2\\}\\.[[:digit:]]\\{1,4\\}/release: %s/g" ver)
+  (let [ver-str (format "s/[[:digit:]]\\{1,2\\}\\.[[:digit:]]\\{1,2\\}\\.[[:digit:]]\\{1,4\\}/%s/g" ver)
         sha (b/git-process {:git-args ["rev-parse" "--short" (format "v%s^{commit}" ver)]})
         sha-str (format "s/sha \"[[:xdigit:]]\\{7,\\}\"/sha \"%s\"/g" sha)]
     (b/process {:command-args ["sed" "-i" "" "-e" ver-str "-e" sha-str "README.md"]})))
@@ -23,8 +23,6 @@
 (defn- update-changelog [ver notes]
   (let [notes (str/replace (str/trim notes) "\n" "\\\n")
         rstr (format "3i\\\n### %s\\\n\\\n%s\\\n\\\n" ver notes)]
-    (println "ver is " ver)
-    (println "notes are " notes)
     (b/process {:command-args ["sed" "-i" "" rstr "CHANGELOG.md"]})))
 
 (defn release [{:keys [notes]}]
@@ -34,7 +32,7 @@
     (update-readme version)
     (update-pubspec version)
     (update-changelog version notes)
-    (b/git-process {:git-args ["commit" "-m" (format "update doc refs to version %s" version)]})
+    (b/git-process {:git-args ["commit" "-a" "-m" (format "update doc refs to version %s" version)]})
     (b/git-process {:git-args "push"})))
 
 (comment
