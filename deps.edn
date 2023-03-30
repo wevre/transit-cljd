@@ -3,7 +3,13 @@
         {:git/url "git@github.com:tensegritics/ClojureDart.git"
          :sha "0add1cc408f61b1e257bc2b04facf4a5ed0b65ff" #_"471c85b8c2378ddbaba39bbaa7926fbfc75c5ce7"}}
  :aliases {:cljd {:main-opts ["-m" "cljd.build"]}
+
            :build {:deps {io.github.clojure/tools.build {:git/tag "v0.9.4" :git/sha "76b78fe"}}
-                   :ns-default build}}
+                   :ns-default build}
+
+           :codox {:extra-deps {codox/codox {:mvn/version "0.10.8"}}
+                   :exec-fn codox.main/generate-docs
+                   :exec-args {:source-paths ["lib/src"]
+                               :output-path ["docs"]}}}
  :cljd/opts {:kind :dart
              :main wevre.transit-cljd}}

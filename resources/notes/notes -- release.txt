@@ -4,15 +4,26 @@
 
 :section Instructions
 
-   To update the version build execute this command:
+   To update the version build execute this command (note that extra args to the
+   -T command are EDN and strings have to be escaped differently):
 
    ```
-      clj -T:build release :notes '"- changes in this release"'
+      clj -T:build release :notes '["change note 1" "change note 2"]'
 
-   Can specify multiple notes by either separating them with `\n` or by hitting
-   return while typing at the command line
+:section Thoughts
 
-   ```
-      clj -T:build release :notes '"- the first note
-      > - the second note
-      "'
+   I wanted to use Clojure's build tools to update the version numbers in the
+   various places, and commit and push. The typical way to replace version
+   numbers in your files is to use `sed`. But what a pain. I'm not a sed expert.
+   I can spend the time to figure out the exact incantation and deal with all
+   the extra escaping, but why? In a week I'll forget how I did it and look back
+   at it and have no idea what it is doing.
+
+   But I do know Clojure. I can do in Clojure exactly what I'm attempting to do
+   in sed, and it will stay understandable to me. And I can narrow in and do
+   specifically what I want. And I can easily test in a non-destructive way in
+   the repl. Wins all around.
+
+   This is nothing against sed. It can obviously do everything I need to do, and
+   in fact I know that because I first did this all with sed. But then I decided
+   on a better way.

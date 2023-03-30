@@ -7,6 +7,7 @@
 ;; Writing
 
 (def default-write-handlers
+  "docstring"
   {cljd/Keyword (let [to-str (fn [s] (.substring (str s) 1))]
                   (reify :extends #/(transit/WriteHandler cljd/Keyword dynamic)
                     (tag [_ _o] ":")
@@ -26,6 +27,7 @@
   (reify transit/ReadHandler (fromRep [_ o] (from-rep o))))
 
 (def default-read-handlers
+  "docstring"
   {":" (read-handler keyword)
    "$" (read-handler symbol)
 
@@ -67,6 +69,7 @@
 ;; Builders
 
 (def map-builder
+  "docstring"
   (reify
     :extends #/(transit/MapBuilder cljd/TransientHashMap cljd/PersistentHashMap dynamic dynamic)
     (init [_] (transient {}))
@@ -74,6 +77,7 @@
     (complete [_ m] (persistent! m))))
 
 (def array-builder
+  "docstring"
   (reify
     :extends #/(transit/ArrayBuilder cljd/TransientVector cljd/PersistentVector dynamic)
     (init [_] (transient []))
@@ -83,6 +87,7 @@
 ;; Codecs
 
 (defn ^transit/TransitJsonCodec json
+  "docstring"
   [& {:keys [custom-read-handlers
              custom-write-handlers
              map-builder
@@ -98,6 +103,7 @@
    .arrayBuilder array-builder))
 
 (defn ^transit/TransitJsonVerboseCodec json-verbose
+  "docstring"
   [& {:keys [custom-read-handlers
              custom-write-handlers
              map-builder
@@ -113,6 +119,7 @@
    .arrayBuilder array-builder))
 
 (defn ^transit/TransitMessagePackCodec msgpack
+  "docstring"
   [& {:keys [custom-read-handlers
              custom-write-handlers
              map-builder

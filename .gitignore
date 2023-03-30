@@ -12,3 +12,4 @@ test/cljd-out/
 .lsp/
 .nrepl-port
 .calva/
+.cpcache/
