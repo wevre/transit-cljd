@@ -8,8 +8,6 @@
 
 :section ToDo
 
-   [] Get roundtrip testing with transit-format/verify working.
-
    [] Test a custom type with custom read/write-handlers.
 
    [] Documentation.
@@ -18,13 +16,15 @@
 
    [] Can run a specific file with `dart run <dart-file>`.
 
-   [] ClojureDart maybe has a way to put test files in test/cljd-out? It's
+:section Done
+
+   [✓] Get roundtrip testing with transit-format/verify working.
+
+   [✓] ClojureDart maybe has a way to put test files in test/cljd-out? It's
    listed in .gitignore but can't see anything that actually puts stuff in that
    folder. UPDATE I'm going back to an earlier approach where I let the test
    files compile as normal to lib/cljd-out, but then I export them in a .dart
    file under test/. That allows me to run dart test and they get picked up.
-
-:section Done
 
    [✓] Organize src and test code under high level 'cljd' directory, with
    appropriate changes to deps.edn.
