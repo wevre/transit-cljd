@@ -1,5 +1,9 @@
 # transit-cljd
 
+### 0.8.16
+
+- bump transit_dart dependency to 0.8.88
+
 ### 0.8.14
 
 - new build process
