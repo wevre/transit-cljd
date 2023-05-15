@@ -1,0 +1,16 @@
+(ns wevre.nums-test
+  (:require ["package:test/test.dart" :as test]
+            [wevre.transit-cljd :as transit]))
+
+(defn test-nums []
+  (let [codec (transit/json)
+        object {:num1 3.0 :num2 4.0}
+        _ (println "Object: " object)
+        encoded (await (.convert (.-encoder codec) object))
+        _ (println "Encoded: " encoded)
+        decoded (await (.convert (.-decoder codec) encoded))
+        _ (println "Decoded: " decoded)]
+    (test/expect decoded (test/equals object))))
+
+(defn main []
+  (test/test "Testing map of numbers" test-nums))

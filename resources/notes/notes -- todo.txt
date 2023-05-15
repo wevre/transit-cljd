@@ -18,6 +18,9 @@
 
 :section Done
 
+   [✓] Check out the nums_test file. I can't get an object to decode all the way
+   back to dart/clojuredart objects.
+
    [✓] Get roundtrip testing with transit-format/verify working.
 
    [✓] ClojureDart maybe has a way to put test files in test/cljd-out? It's
