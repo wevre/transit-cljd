@@ -1,5 +1,9 @@
 # transit-cljd
 
+### 0.8.18
+
+- bump version of transit_dart to fix single item conversion
+
 ### 0.8.16
 
 - bump transit_dart dependency to 0.8.88
