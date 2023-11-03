@@ -5,53 +5,50 @@
             ["package:transit_dart/transit_dart.dart" :as transit]))
 
 ;; Writing
-
 (def default-write-handlers
-  "docstring"
-  {cljd/Keyword (let [to-str (fn [s] (.substring (str s) 1))]
-                  (reify :extends #/(transit/WriteHandler cljd/Keyword dynamic)
-                    (tag [_ _o] ":")
-                    (rep [_ o .tag] (to-str o))
-                    (stringRep [_ o] (to-str o))))
-
-   cljd/Symbol (reify :extends #/(transit/WriteHandler cljd/Symbol dynamic)
-                 (tag [_ _o] "$")
-                 (rep [_ o .tag] (str o))
-                 (stringRep [_ o] (str o)))})
+  {List
+   (reify :extends #/(transit/WriteHandler dynamic dynamic)
+     (tag [_ l] (if (seq? l) "list" "array"))
+     (rep [_ l .tag] (if (seq? l) (transit/TaggedValue "array" l) l))
+     (stringRep [_ _] nil))
+   cljd/Keyword
+   (reify :extends #/(transit/WriteHandler cljd/Keyword dynamic)
+     (tag [_ l] ":")
+     (rep [_ kw .tag] (.substring (str kw) 1))
+     (stringRep [_ kw] (.substring (str kw) 1)))
+   cljd/Symbol
+   (reify :extends #/(transit/WriteHandler cljd/Symbol dynamic)
+     (tag [_ _o] "$")
+     (rep [_ o .tag] (str o))
+     (stringRep [_ o] (str o)))})
 
 ;; Reading
-
-(defn read-handler
-  "Creates a transit ReadHandler whose fromRep method invokes the provided fn."
-  [from-rep]
-  (reify transit/ReadHandler (fromRep [_ o] (from-rep o))))
-
 (def default-read-handlers
-  "docstring"
-  {":" (read-handler keyword)
-   "$" (read-handler symbol)
-
+  {":" (reify transit/ReadHandler (fromRep [_ o] (keyword o)))
+   "$" (reify transit/ReadHandler (fromRep [_ o] (symbol o)))
+   "ratio" (reify transit/ReadHandler (fromRep [_ o] (/ (aget o 0) (aget o 1))))
    "set"
    (reify transit/ArrayReadHandler
      (fromRep [_ _o])
      (arrayBuilder [_]
-       (reify
-         :extends #/(transit/ArrayBuilder cljd/PersistentHashSet cljd/PersistentHashSet dynamic)
-         (init [_] #{})
-         (add [_ s i] (conj s i))
-         (complete [_ s] s))
-       #_(reify
-           :extends #/(transit/ArrayBuilder cljd/TransientHashSet cljd/PersistentHashSet dynamic)
-           (init [_] (transient #{}))
-           (add [_ s i] (conj! s i))
-           (complete [_ s] (persistent! s)))))
-
+       (reify :extends #/(transit/ArrayBuilder dynamic cljd/PersistentHashSet dynamic)
+         (init [_] (transient #{}))
+         (add [_ s i] (conj! s i))
+         (complete [_ s] (persistent! s)))))
+   "list"
+   (reify transit/ArrayReadHandler
+     (fromRep [_ _o] o)
+     (arrayBuilder [_]
+       (reify :extends #/(transit/ArrayBuilder List cljd/PersistentList dynamic)
+         (init [_] #dart [])
+         (add [_ l item] (.add ^List l item) l)
+         (complete [_ l] (or (seq l) '())))))
    "cmap"
    (reify transit/ArrayReadHandler
      (fromRep [_ _o])
      (arrayBuilder [_]
        (let [marker ^:unique (Object)
-             next-key (List/from [marker])]
+             next-key #dart ^:fixed [marker]]
          (reify
            :extends #/(transit/ArrayBuilder cljd/TransientHashMap cljd/PersistentHashMap dynamic)
            (init [_] (transient {}))
@@ -64,7 +61,11 @@
                  (do
                    (aset next-key 0 marker)
                    (assoc! m k i)))))
-           (complete [_ m] (persistent! m))))))})
+           (complete [_ m] (persistent! m))))))
+   "with-meta"
+   (reify ReadHandler
+     (fromRep [_ o]
+       (with-meta (aget o 0) (aget o 1))))})
 
 ;; Builders
 

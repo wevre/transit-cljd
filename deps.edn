@@ -1,7 +1,7 @@
 {:paths ["lib/src" "lib/test"]
  :deps {tensegritics/clojuredart
         {:git/url "git@github.com:tensegritics/ClojureDart.git"
-         :sha "9a6ecd8f347a5d85836ca27d3c57b1cb05ded5a4" #_"8d5916c0dc87146dc2e8921aaa7fd5dc3c6c3401" #_"0add1cc408f61b1e257bc2b04facf4a5ed0b65ff" #_"471c85b8c2378ddbaba39bbaa7926fbfc75c5ce7"}}
+         :sha "558e772fb0b9bcd3413f1fe08b117fb9e24fe280"}}
  :aliases {:cljd {:main-opts ["-m" "cljd.build"]}
 
            :build {:deps {io.github.clojure/tools.build {:git/tag "v0.9.4" :git/sha "76b78fe"}}
