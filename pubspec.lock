@@ -325,7 +325,7 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "1af1f9801c7614326d94f2be909ea15cb553cf75"
+      ref: HEAD
       resolved-ref: "1af1f9801c7614326d94f2be909ea15cb553cf75"
       url: "git@github.com:Roam-Research/transit-dart.git"
     source: git

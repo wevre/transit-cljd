@@ -12,13 +12,16 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  transit_dart: ^0.8.90
-
-dependency_overrides:
   transit_dart:
     git:
       url: git@github.com:Roam-Research/transit-dart.git
-      ref: 1af1f9801c7614326d94f2be909ea15cb553cf75
+
+
+# dependency_overrides:
+#   transit_dart:
+#     git:
+#       url: git@github.com:Roam-Research/transit-dart.git
+#       ref: 1af1f9801c7614326d94f2be909ea15cb553cf75
 
 dev_dependencies:
   lints: ^2.0.0
