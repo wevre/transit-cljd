@@ -14,7 +14,7 @@ environment:
 dependencies:
   transit_dart:
     git:
-      url: git@github.com:Roam-Research/transit-dart.git
+      url: https://github.com/Roam-Research/transit-dart.git
 
 
 # dependency_overrides:
