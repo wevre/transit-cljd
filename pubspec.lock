@@ -326,10 +326,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "1af1f9801c7614326d94f2be909ea15cb553cf75"
-      url: "git@github.com:Roam-Research/transit-dart.git"
+      resolved-ref: edbc917954a3d65e38b7d19a4ce1e6940c9e42ad
+      url: "https://github.com/wevre/transit-dart"
     source: git
-    version: "0.8.90"
+    version: "0.8.107"
   typed_data:
     dependency: transitive
     description:

@@ -1,5 +1,9 @@
 # transit-cljd
 
+### 0.8.26
+
+- merged changes from Tensegritics
+
 ### 0.8.18
 
 - bump version of transit_dart to fix single item conversion

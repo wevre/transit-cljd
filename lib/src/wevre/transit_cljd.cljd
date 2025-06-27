@@ -3,22 +3,23 @@
    transit_dart Dart package."
   (:require [cljd.core :as cljd]
             ["package:transit_dart/transit_dart.dart" :as transit]
-            ["package:transit_dart/src/handlers/write_handlers.dart" :as clazz]))
+            ["package:transit_dart/src/handlers/write_handlers.dart" :as wh]))
 
 ;; Writing
+#_{:clj-kondo/ignore [:unused-binding]}
 (def default-write-handlers
   (hash-map
-    (#/(clazz/Class List))
+    (#/(wh/Class List))
     (reify :extends #/(transit/WriteHandler List dynamic)
       (tag [_ l] (if (sequential? l) "list" "array"))
       (rep [_ l .tag] (if (sequential? l) (transit/TaggedValue "array" l) l))
       (stringRep [_ _] nil))
-    (#/(clazz/Class cljd/Keyword))
+    (#/(wh/Class cljd/Keyword))
     (reify :extends #/(transit/WriteHandler cljd/Keyword dynamic)
       (tag [_ l] ":")
       (rep [_ kw .tag] (.substring (str kw) 1))
       (stringRep [_ kw] (.substring (str kw) 1)))
-    (#/(clazz/Class cljd/Symbol))
+    (#/(wh/Class cljd/Symbol))
     (reify :extends #/(transit/WriteHandler cljd/Symbol dynamic)
       (tag [_ _o] "$")
       (rep [_ o .tag] (str o))
@@ -84,8 +85,9 @@
 
 ;; Codecs
 
-(defn ^transit/TransitJsonCodec json
+(defn json
   "docstring"
+  ^transit/TransitJsonCodec
   [& {:keys [custom-read-handlers
              custom-write-handlers
              map-builder
@@ -100,8 +102,9 @@
    .mapBuilder map-builder
    .arrayBuilder array-builder))
 
-(defn ^transit/TransitJsonVerboseCodec json-verbose
+(defn json-verbose
   "docstring"
+  ^transit/TransitJsonVerboseCodec
   [& {:keys [custom-read-handlers
              custom-write-handlers
              map-builder
@@ -116,8 +119,9 @@
    .mapBuilder map-builder
    .arrayBuilder array-builder))
 
-(defn ^transit/TransitMessagePackCodec msgpack
+(defn msgpack
   "docstring"
+  ^transit/TransitMessagePackCodec
   [& {:keys [custom-read-handlers
              custom-write-handlers
              map-builder
