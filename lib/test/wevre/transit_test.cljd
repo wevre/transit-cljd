@@ -5,13 +5,14 @@
 
 (defn simple-test []
   (let [codec (transit/json)
-        objects ["foo" {:a [1 2]}]
+        objects ["foo" :bar {:a [1 2]}
+                 #inst "2023-11-03T14:23:51.010-00:00"]
         roundtrip (await
-                   (-> (async/Stream.fromIterable objects)
-                       (.transform (.-encoder codec))
-                       (.transform (.-decoder codec))
-                       .toList))]
-    (test/expect roundtrip (test/equals objects))))
+                    (-> (async/Stream.fromIterable objects)
+                      (.transform (.-encoder codec))
+                      (.transform (.-decoder codec))
+                      .toList))]
+    (test/expect (seq roundtrip) (test/equals objects))))
 
 (defn main []
   (test/test "Simple round trip" simple-test))

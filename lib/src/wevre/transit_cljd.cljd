@@ -2,58 +2,56 @@
   "An implementation of the transit-format for ClojureDart build on top of the
    transit_dart Dart package."
   (:require [cljd.core :as cljd]
-            ["package:transit_dart/transit_dart.dart" :as transit]))
+            ["package:transit_dart/transit_dart.dart" :as transit]
+            ["package:transit_dart/src/handlers/write_handlers.dart" :as clazz]))
 
 ;; Writing
-
 (def default-write-handlers
-  "docstring"
-  {cljd/Keyword (let [to-str (fn [s] (.substring (str s) 1))]
-                  (reify :extends #/(transit/WriteHandler cljd/Keyword dynamic)
-                    (tag [_ _o] ":")
-                    (rep [_ o .tag] (to-str o))
-                    (stringRep [_ o] (to-str o))))
-
-   cljd/Symbol (reify :extends #/(transit/WriteHandler cljd/Symbol dynamic)
-                 (tag [_ _o] "$")
-                 (rep [_ o .tag] (str o))
-                 (stringRep [_ o] (str o)))})
+  (hash-map
+    (#/(clazz/Class List))
+    (reify :extends #/(transit/WriteHandler List dynamic)
+      (tag [_ l] (if (sequential? l) "list" "array"))
+      (rep [_ l .tag] (if (sequential? l) (transit/TaggedValue "array" l) l))
+      (stringRep [_ _] nil))
+    (#/(clazz/Class cljd/Keyword))
+    (reify :extends #/(transit/WriteHandler cljd/Keyword dynamic)
+      (tag [_ l] ":")
+      (rep [_ kw .tag] (.substring (str kw) 1))
+      (stringRep [_ kw] (.substring (str kw) 1)))
+    (#/(clazz/Class cljd/Symbol))
+    (reify :extends #/(transit/WriteHandler cljd/Symbol dynamic)
+      (tag [_ _o] "$")
+      (rep [_ o .tag] (str o))
+      (stringRep [_ o] (str o)))))
 
 ;; Reading
-
-(defn read-handler
-  "Creates a transit ReadHandler whose fromRep method invokes the provided fn."
-  [from-rep]
-  (reify transit/ReadHandler (fromRep [_ o] (from-rep o))))
-
 (def default-read-handlers
-  "docstring"
-  {":" (read-handler keyword)
-   "$" (read-handler symbol)
-
+  {":" (reify transit/ReadHandler (fromRep [_ o] (keyword o)))
+   "$" (reify transit/ReadHandler (fromRep [_ o] (symbol o)))
    "set"
    (reify transit/ArrayReadHandler
      (fromRep [_ _o])
      (arrayBuilder [_]
-       (reify
-         :extends #/(transit/ArrayBuilder cljd/PersistentHashSet cljd/PersistentHashSet dynamic)
-         (init [_] #{})
-         (add [_ s i] (conj s i))
-         (complete [_ s] s))
-       #_(reify
-           :extends #/(transit/ArrayBuilder cljd/TransientHashSet cljd/PersistentHashSet dynamic)
-           (init [_] (transient #{}))
-           (add [_ s i] (conj! s i))
-           (complete [_ s] (persistent! s)))))
-
+       (reify :extends transit/ArrayBuilder
+         (init [_] (transient #{}))
+         (add [_ s i] (conj! s i))
+         (complete [_ s] (persistent! s)))))
+   "list"
+   (reify transit/ArrayReadHandler
+     (fromRep [_ o] o)
+     (arrayBuilder [_]
+       (reify :extends transit/ArrayBuilder
+         (init [_] (transient []))
+         (add [_ l item] (conj! l item))
+         (complete [_ l] (persistent! l)))))
    "cmap"
    (reify transit/ArrayReadHandler
      (fromRep [_ _o])
      (arrayBuilder [_]
        (let [marker ^:unique (Object)
-             next-key (List/from [marker])]
+             next-key #dart ^:fixed [marker]]
          (reify
-           :extends #/(transit/ArrayBuilder cljd/TransientHashMap cljd/PersistentHashMap dynamic)
+           :extends transit/ArrayBuilder
            (init [_] (transient {}))
            (add [_ m i]
              (let [k (aget next-key 0)]
