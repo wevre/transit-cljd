@@ -1,5 +1,9 @@
 # transit-cljd
 
+### 0.8.32
+
+- custom read/write handlers
+
 ### 0.8.28
 
 - bumped transit-dart dependency
