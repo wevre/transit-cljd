@@ -16,12 +16,7 @@ dependencies:
     git:
       url: https://github.com/wevre/transit-dart
 
-
-# dependency_overrides:
-#   transit_dart:
-#     git:
-#       url: git@github.com:Roam-Research/transit-dart.git
-#       ref: 1af1f9801c7614326d94f2be909ea15cb553cf75
+publish_to: none
 
 dev_dependencies:
   lints: ^2.0.0

@@ -1,0 +1,19 @@
+(ns wevre.transit-test-json
+  (:require ["dart:async" :as async]
+            ["package:test/test.dart" :as test]
+            [wevre.transit-cljd :as transit]))
+
+(defn simple-test []
+  (let [codec (transit/json)
+        objects ["foo" :bar {:a [1 2]}
+                 #inst "2023-11-03T14:23:51.010-00:00"]
+        roundtrip (await
+                    (-> (async/Stream.fromIterable objects)
+                      (.transform (.-encoder codec))
+                      (.transform (.-decoder codec))
+                      .toList))]
+    (test/expect (seq roundtrip) (test/equals objects))))
+
+#_{:clojure-lsp/ignore [:clojure-lsp/unused-public-var]}
+(defn main []
+  (test/test "Simple round trip" simple-test))

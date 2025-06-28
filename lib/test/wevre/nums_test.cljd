@@ -12,5 +12,6 @@
         _ (println "Decoded: " decoded)]
     (test/expect decoded (test/equals object))))
 
+#_{:clojure-lsp/ignore [:clojure-lsp/unused-public-var]}
 (defn main []
   (test/test "Testing map of numbers" test-nums))

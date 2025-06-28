@@ -20,5 +20,6 @@
         _ (println "Decoded: " decoded)]
     (test/expect decoded (test/equals objects))))
 
+#_{:clojure-lsp/ignore [:clojure-lsp/unused-public-var]}
 (defn main []
   (test/test "Round trip in steps" test-steps))

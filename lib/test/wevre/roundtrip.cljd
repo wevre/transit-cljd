@@ -31,6 +31,7 @@
         (. #/(cast (List int)))
         (.pipe io/stdout))))
 
+#_{:clojure-lsp/ignore [:clojure-lsp/unused-public-var]}
 (defn main [arg]
   (case (get arg 0)
     "json" (json-round-trip)
