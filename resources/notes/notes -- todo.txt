@@ -6,17 +6,20 @@
 
    Use ✓ to mark completed
 
-:section ToDo
+:section Reminders
 
-   [] Test a custom type with custom read/write-handlers.
+   Compile a specific namespace with `clj -M:cljd compile <ns>`.
+
+   Run a specific file with `dart run <dart-file>`. Note that cljd outputs to
+   lib/cljd-out.
+
+:section ToDo
 
    [] Documentation.
 
-   [] Can compile a specific namespace with `clj -M:cljd compile <ns>`.
-
-   [] Can run a specific file with `dart run <dart-file>`.
-
 :section Done
+
+   [✓] Test a custom type with custom read/write-handlers.
 
    [✓] Check out the nums_test file. I can't get an object to decode all the way
    back to dart/clojuredart objects.

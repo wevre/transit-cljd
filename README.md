@@ -32,11 +32,25 @@ io.github.wevre/transit-cljd {:git/tag "v0.8.28" :git/sha "20f78fb"}
 
 ```
 (ns main
-  (:require [wevre.transit-cljd :as transit]))
+  (:require ["dart:async" :as async]
+            [wevre.transit-cljd :as transit]
+            ["package:transit_dart/transit_dart.dart" :as td]))
+
+(defrecord Point [x y])
+
+(def point-write-handler (reify :extends #/(td/WriteHandler Point dynamic)
+                           (tag [_ l] "point")
+                           (rep [_ obj .tag] [(:x obj) (:y obj)])))
+
+(def point-read-handler (reify :extends #/(td/ReadHandler Point dynamic)
+                          (fromRep [_ o] (->Point (first o) (second o)))))
 
 (defn main []
-  (let [codec (transit/json)
-        objects ["foo" {:a [1 2]}]
+  (let [codec (transit/json :custom-read-handlers {"point" point-read-handler}
+                            :custom-write-handlers {(#/(td/Class Point)) point-write-handler})
+        objects ["foo" :bar {:a [1 2]}
+                 #inst "2023-11-03T14:23:51.010-00:00"
+                 (->Point 1.2 3.4)]
         _ (println "Object: " objects)
         encoded (await
                  (-> (async/Stream.fromIterable objects)
@@ -57,7 +71,7 @@ Coming soon.
 
 ## Testing
 
-NOTE: 2025-06-28 :json-verbose not passing all tests.
+_NOTE: 2025-06-28 :json-verbose not passing all tests._
 
 To run the roundtrip verification tests in `transit-format`, first ensure
 Dart>=2.19.4 and Java 8 are installed, then do the following:

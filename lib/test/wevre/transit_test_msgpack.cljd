@@ -1,18 +1,42 @@
 (ns wevre.transit-test-msgpack
   (:require ["dart:async" :as async]
             ["package:test/test.dart" :as test]
-            [wevre.transit-cljd :as transit]))
+            [wevre.transit-cljd :as transit]
+            ["package:transit_dart/transit_dart.dart" :as td]))
+
+(defrecord Point [x y])
+
+(def point-write-handler (reify :extends #/(td/WriteHandler Point dynamic)
+                           (tag [_ l] "point")
+                           (rep [_ obj .tag] [(:x obj) (:y obj)])))
+
+(def point-read-handler (reify :extends #/(td/ReadHandler Point dynamic)
+                          (fromRep [_ o] (->Point (first o) (second o)))))
 
 (defn simple-test []
-  (let [codec (transit/msgpack)
+  (let [codec (transit/msgpack :custom-read-handlers {"point" point-read-handler}
+                               :custom-write-handlers {(#/(td/Class Point)) point-write-handler})
         objects ["foo" :bar {:a [1 2]}
-                 #inst "2023-11-03T14:23:51.010-00:00"]
-        roundtrip (await
-                    (-> (async/Stream.fromIterable objects)
-                      (.transform (.-encoder codec))
-                      (.transform (.-decoder codec))
-                      .toList))]
-    (test/expect (seq roundtrip) (test/equals objects))))
+                 #inst "2023-11-03T14:23:51.010-00:00"
+                 (->Point 1.2 3.4)]
+        _ (println "Objects: " objects)
+        encoded (await
+                 (-> (async/Stream.fromIterable objects)
+                     (.transform (.-encoder codec))
+                     .toList))
+        _ (println "Encoded: " encoded)
+        decoded (await
+                 (-> (async/Stream.fromIterable encoded)
+                     (. #/(cast String))
+                     (.transform (.-decoder codec))
+                     .toList))
+        _ (println "Decoded: " decoded)
+        #_#_roundtrip (await
+                       (-> (async/Stream.fromIterable objects)
+                           (.transform (.-encoder codec))
+                           (.transform (.-decoder codec))
+                           .toList))]
+    (test/expect decoded (test/equals objects))))
 
 #_{:clojure-lsp/ignore [:clojure-lsp/unused-public-var]}
 (defn main []

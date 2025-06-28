@@ -2,57 +2,56 @@
   "An implementation of the transit-format for ClojureDart build on top of the
    transit_dart Dart package."
   (:require [cljd.core :as cljd]
-            ["package:transit_dart/transit_dart.dart" :as transit]
-            ["package:transit_dart/src/handlers/write_handlers.dart" :as wh]))
+            ["package:transit_dart/transit_dart.dart" :as td]))
 
 ;; Writing
 #_{:clj-kondo/ignore [:unused-binding]}
-(def default-write-handlers
+(def standard-write-handlers
   (hash-map
-    (#/(wh/Class List))
-    (reify :extends #/(transit/WriteHandler List dynamic)
+    (#/(td/Class List))
+    (reify :extends #/(td/WriteHandler List dynamic)
       (tag [_ l] (if (sequential? l) "list" "array"))
-      (rep [_ l .tag] (if (sequential? l) (transit/TaggedValue "array" l) l))
+      (rep [_ l .tag] (if (sequential? l) (td/TaggedValue "array" l) l))
       (stringRep [_ _] nil))
-    (#/(wh/Class cljd/Keyword))
-    (reify :extends #/(transit/WriteHandler cljd/Keyword dynamic)
+    (#/(td/Class cljd/Keyword))
+    (reify :extends #/(td/WriteHandler cljd/Keyword dynamic)
       (tag [_ l] ":")
       (rep [_ kw .tag] (.substring (str kw) 1))
       (stringRep [_ kw] (.substring (str kw) 1)))
-    (#/(wh/Class cljd/Symbol))
-    (reify :extends #/(transit/WriteHandler cljd/Symbol dynamic)
+    (#/(td/Class cljd/Symbol))
+    (reify :extends #/(td/WriteHandler cljd/Symbol dynamic)
       (tag [_ _o] "$")
       (rep [_ o .tag] (str o))
       (stringRep [_ o] (str o)))))
 
 ;; Reading
-(def default-read-handlers
-  {":" (reify transit/ReadHandler (fromRep [_ o] (keyword o)))
-   "$" (reify transit/ReadHandler (fromRep [_ o] (symbol o)))
+(def standard-read-handlers
+  {":" (reify td/ReadHandler (fromRep [_ o] (keyword o)))
+   "$" (reify td/ReadHandler (fromRep [_ o] (symbol o)))
    "set"
-   (reify transit/ArrayReadHandler
+   (reify td/ArrayReadHandler
      (fromRep [_ _o])
      (arrayBuilder [_]
-       (reify :extends transit/ArrayBuilder
+       (reify :extends td/ArrayBuilder
          (init [_] (transient #{}))
          (add [_ s i] (conj! s i))
          (complete [_ s] (persistent! s)))))
    "list"
-   (reify transit/ArrayReadHandler
+   (reify td/ArrayReadHandler
      (fromRep [_ o] o)
      (arrayBuilder [_]
-       (reify :extends transit/ArrayBuilder
+       (reify :extends td/ArrayBuilder
          (init [_] (transient []))
          (add [_ l item] (conj! l item))
          (complete [_ l] (persistent! l)))))
    "cmap"
-   (reify transit/ArrayReadHandler
+   (reify td/ArrayReadHandler
      (fromRep [_ _o])
      (arrayBuilder [_]
        (let [marker ^:unique (Object)
              next-key #dart ^:fixed [marker]]
          (reify
-           :extends transit/ArrayBuilder
+           :extends td/ArrayBuilder
            (init [_] (transient {}))
            (add [_ m i]
              (let [k (aget next-key 0)]
@@ -70,7 +69,7 @@
 (def map-builder
   "docstring"
   (reify
-    :extends #/(transit/MapBuilder cljd/TransientHashMap cljd/PersistentHashMap dynamic dynamic)
+    :extends #/(td/MapBuilder cljd/TransientHashMap cljd/PersistentHashMap dynamic dynamic)
     (init [_] (transient {}))
     (add [_ m k v] (assoc! m k v))
     (complete [_ m] (persistent! m))))
@@ -78,7 +77,7 @@
 (def array-builder
   "docstring"
   (reify
-    :extends #/(transit/ArrayBuilder cljd/TransientVector cljd/PersistentVector dynamic)
+    :extends #/(td/ArrayBuilder cljd/TransientVector cljd/PersistentVector dynamic)
     (init [_] (transient []))
     (add [_ v i] (conj! v i))
     (complete [_ v] (persistent! v))))
@@ -87,51 +86,45 @@
 
 (defn json
   "docstring"
-  ^transit/TransitJsonCodec
+  ^td/TransitJsonCodec
   [& {:keys [custom-read-handlers
              custom-write-handlers
              map-builder
              array-builder]
-      :or {custom-read-handlers default-read-handlers
-           custom-write-handlers default-write-handlers
-           map-builder map-builder
+      :or {map-builder map-builder
            array-builder array-builder}}]
-  (transit/TransitJsonCodec
-   .customReadHandlers custom-read-handlers
-   .customWriteHandlers custom-write-handlers
+  (td/TransitJsonCodec
+   .customReadHandlers (merge standard-read-handlers custom-read-handlers)
+   .customWriteHandlers (merge standard-write-handlers custom-write-handlers)
    .mapBuilder map-builder
    .arrayBuilder array-builder))
 
 (defn json-verbose
   "docstring"
-  ^transit/TransitJsonVerboseCodec
+  ^td/TransitJsonVerboseCodec
   [& {:keys [custom-read-handlers
              custom-write-handlers
              map-builder
              array-builder]
-      :or {custom-read-handlers default-read-handlers
-           custom-write-handlers default-write-handlers
-           map-builder map-builder
+      :or {map-builder map-builder
            array-builder array-builder}}]
-  (transit/TransitJsonVerboseCodec
-   .customReadHandlers custom-read-handlers
-   .customWriteHandlers custom-write-handlers
+  (td/TransitJsonVerboseCodec
+   .customReadHandlers (merge standard-read-handlers custom-read-handlers)
+   .customWriteHandlers (merge standard-write-handlers custom-write-handlers)
    .mapBuilder map-builder
    .arrayBuilder array-builder))
 
 (defn msgpack
   "docstring"
-  ^transit/TransitMessagePackCodec
+  ^td/TransitMessagePackCodec
   [& {:keys [custom-read-handlers
              custom-write-handlers
              map-builder
              array-builder]
-      :or {custom-read-handlers default-read-handlers
-           custom-write-handlers default-write-handlers
-           map-builder map-builder
+      :or {map-builder map-builder
            array-builder array-builder}}]
-  (transit/TransitMessagePackCodec
-   .customReadHandlers custom-read-handlers
-   .customWriteHandlers custom-write-handlers
+  (td/TransitMessagePackCodec
+   .customReadHandlers (merge standard-read-handlers custom-read-handlers)
+   .customWriteHandlers (merge standard-write-handlers custom-write-handlers)
    .mapBuilder map-builder
    .arrayBuilder array-builder))
