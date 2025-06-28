@@ -21,7 +21,7 @@ changes._
 
 * Latest release: 0.8.28 <!--TRANSIT_CLJD_VERSION-->
 
-As a git dep:
+In deps.edn:
 
 <!--TRANSIT_CLJD_DEPS-->
 ```
@@ -32,11 +32,10 @@ io.github.wevre/transit-cljd {:git/tag "v0.8.28" :git/sha "20f78fb"}
 
 ```
 (ns main
-  (:require [wevre.transit-cljd :as transit]
-            ["dart:async" :as async]))
+  (:require [wevre.transit-cljd :as transit]))
 
 (defn main []
-  (let [codec (transit/json-codec)
+  (let [codec (transit/json)
         objects ["foo" {:a [1 2]}]
         _ (println "Object: " objects)
         encoded (await
@@ -57,6 +56,8 @@ io.github.wevre/transit-cljd {:git/tag "v0.8.28" :git/sha "20f78fb"}
 Coming soon.
 
 ## Testing
+
+NOTE: 2025-06-28 :json-verbose not passing all tests.
 
 To run the roundtrip verification tests in `transit-format`, first ensure
 Dart>=2.19.4 and Java 8 are installed, then do the following:
