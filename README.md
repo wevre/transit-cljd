@@ -30,6 +30,9 @@ io.github.wevre/transit-cljd {:git/tag "v0.8.28" :git/sha "20f78fb"}
 
 ## Usage
 
+The example below shows the use of custom read/write handlers. See more examples
+in the various test files.
+
 ```
 (ns main
   (:require ["dart:async" :as async]
