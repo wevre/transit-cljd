@@ -1,5 +1,10 @@
 # transit-cljd
 
+### 0.8.28
+
+- bumped transit-dart dependency
+- fixes msgpack DateTime bug
+
 ### 0.8.26
 
 - merged changes from Tensegritics
