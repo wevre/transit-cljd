@@ -334,10 +334,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "2c5a4be4e61e94caa9541a941d184f01c0cce80e"
+      resolved-ref: "3f29b084d76e2e58e32f70c93cdd03542ea13920"
       url: "https://github.com/wevre/transit-dart"
     source: git
-    version: "0.8.114"
+    version: "0.8.117"
   typed_data:
     dependency: transitive
     description:

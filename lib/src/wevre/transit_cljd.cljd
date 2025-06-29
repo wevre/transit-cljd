@@ -6,13 +6,8 @@
 
 ;; Writing
 #_{:clj-kondo/ignore [:unused-binding]}
-(def standard-write-handlers
+(def cljd-write-handlers
   (hash-map
-    (#/(td/Class List))
-    (reify :extends #/(td/WriteHandler List dynamic)
-      (tag [_ l] (if (sequential? l) "list" "array"))
-      (rep [_ l .tag] (if (sequential? l) (td/TaggedValue "array" l) l))
-      (stringRep [_ _] nil))
     (#/(td/Class cljd/Keyword))
     (reify :extends #/(td/WriteHandler cljd/Keyword dynamic)
       (tag [_ l] ":")
@@ -25,7 +20,7 @@
       (stringRep [_ o] (str o)))))
 
 ;; Reading
-(def standard-read-handlers
+(def cljd-read-handlers
   {":" (reify td/ReadHandler (fromRep [_ o] (keyword o)))
    "$" (reify td/ReadHandler (fromRep [_ o] (symbol o)))
    "set"
@@ -94,8 +89,8 @@
       :or {map-builder map-builder
            array-builder array-builder}}]
   (td/TransitJsonCodec
-   .customReadHandlers (merge standard-read-handlers custom-read-handlers)
-   .customWriteHandlers (merge standard-write-handlers custom-write-handlers)
+   .customReadHandlers (merge cljd-read-handlers custom-read-handlers)
+   .customWriteHandlers (merge cljd-write-handlers custom-write-handlers)
    .mapBuilder map-builder
    .arrayBuilder array-builder))
 
@@ -109,8 +104,8 @@
       :or {map-builder map-builder
            array-builder array-builder}}]
   (td/TransitJsonVerboseCodec
-   .customReadHandlers (merge standard-read-handlers custom-read-handlers)
-   .customWriteHandlers (merge standard-write-handlers custom-write-handlers)
+   .customReadHandlers (merge cljd-read-handlers custom-read-handlers)
+   .customWriteHandlers (merge cljd-write-handlers custom-write-handlers)
    .mapBuilder map-builder
    .arrayBuilder array-builder))
 
@@ -124,7 +119,7 @@
       :or {map-builder map-builder
            array-builder array-builder}}]
   (td/TransitMessagePackCodec
-   .customReadHandlers (merge standard-read-handlers custom-read-handlers)
-   .customWriteHandlers (merge standard-write-handlers custom-write-handlers)
+   .customReadHandlers (merge cljd-read-handlers custom-read-handlers)
+   .customWriteHandlers (merge cljd-write-handlers custom-write-handlers)
    .mapBuilder map-builder
    .arrayBuilder array-builder))

@@ -70,7 +70,15 @@ in the various test files.
 
 ## Default Type Mapping
 
-Coming soon.
+All the types supported by [transit-dart](github.com/wevre/transit-dart) are
+supported here with additional types, specific to ClojureDart, listed in the
+table below. This implementation also uses native ClojureDart collections for
+arrays, maps, and sets.
+
+|Transit Type   |Write accepts           |Read produces           |
+|------         |------                  |------                  |
+|keyword        |cljd/Keyword            |cljd/Keyword            |
+|symbol         |cljd/Symbol             |cljd/Symbol             |
 
 ## Testing
 
