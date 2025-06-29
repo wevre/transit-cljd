@@ -1,5 +1,9 @@
 # transit-cljd
 
+### 0.8.36
+
+- turn caching on
+
 ### 0.8.34
 
 - bump transit-dart to fix date bug in verbose

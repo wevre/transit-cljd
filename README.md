@@ -19,13 +19,13 @@ changes._
 
 ## Releases and Dependency Information
 
-* Latest release: 0.8.34 <!--TRANSIT_CLJD_VERSION-->
+* Latest release: 0.8.36 <!--TRANSIT_CLJD_VERSION-->
 
 In deps.edn:
 
 <!--TRANSIT_CLJD_DEPS-->
 ```
-io.github.wevre/transit-cljd {:git/tag "v0.8.34" :git/sha "350f71d"}
+io.github.wevre/transit-cljd {:git/tag "v0.8.36" :git/sha "d9541d0"}
 ```
 
 ## Usage
