@@ -92,15 +92,17 @@
 
 ;; Build target: 'release'
 
+#_{:clojure-lsp/ignore [:clojure-lsp/unused-public-var]}
 (defn release
   "Adds a tag to the latest commit and pushes that, then updates version
    references in README.md, pubspec.yaml, and CHANGELOG.md and pushes those."
   [{:keys [notes]}]
-  (let [ver (version)]
-    (b/git-process {:git-args ["tag" "-a" (format "v%s" ver) "-m" (format "Release %s" ver)]})
+  (let [ver (version)
+        tag (format "v%s" ver)]
+    (b/git-process {:git-args ["tag" "-a" tag "-m" (format "Release %s" ver)]})
     (b/git-process {:git-args "push"})
     (update-readme ver)
     (update-pubspec ver)
     (update-changelog ver notes)
     (b/git-process {:git-args ["commit" "-a" "-m" (format "update doc refs to ver %s" ver)]})
-    (b/git-process {:git-args "push"})))
+    (b/git-process {:git-args ["push" "--follow-tags"]})))

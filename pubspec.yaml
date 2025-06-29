@@ -16,7 +16,7 @@ dependencies:
     git:
       url: https://github.com/wevre/transit-dart
 
-publish_to: none
+publish_to: 'none'
 
 dev_dependencies:
   lints: ^6.0.0
